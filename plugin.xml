@@ -40,6 +40,8 @@
 		<preference name="ANDROID_FIREBASE_BOM_VERSION" default="26.0.0" />
 		<preference name="ANDROID_GOOGLE_SERVICES_VERSION" default="4.3.4" />
 		<preference name="ANDROID_GRADLE_TOOLS_VERSION" default="4.1.0" />
+		
+		<!-- <resource-file src="google-services.json" target="app/googleservices.json" /> -->
 
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
 			<activity android:name="com.gae.scaffolder.plugin.FCMPluginActivity" android:launchMode="singleTop">
@@ -78,58 +80,8 @@
 		<source-file src="src/android/com/gae/scaffolder/plugin/interfaces/TokenListeners.java" target-dir="src/com/gae/scaffolder/plugin/interfaces" />
 	</platform>
 
-	<!-- IOS CONFIGURATION -->
-	<platform name="ios">
-		<preference name="IOS_FIREBASE_MESSAGING_VERSION" default="~> 7.4.0" />
-		<config-file target="config.xml" parent="/*">
-			<feature name="FCMPlugin">
-				<param name="ios-package" value="FCMPlugin"/>
-			</feature>
-		</config-file>
-
-		<!-- ENABLE PUSH CAPABILITY -->
-		<config-file parent="aps-environment" target="*/Entitlements-Debug.plist">
-			<string>development</string>
-		</config-file>
-		<config-file parent="aps-environment" target="*/Entitlements-Release.plist">
-			<string>production</string>
-		</config-file>
-		<config-file target="*-Info.plist" parent="UIBackgroundModes">
-			<array>
-				<string>remote-notification</string>
-			</array>
-		</config-file>
-		<config-file target="*-Info.plist" parent="FirebaseAppDelegateProxyEnabled">
-			<false/>
-		</config-file>
-
-		<resource-file src="src/ios/Assets/GoogleService-Info.plist" target="Resources/GoogleService-Info.plist" />
-
-		<header-file src="src/ios/FCMPlugin.h" />
-		<source-file src="src/ios/FCMPlugin.m" />
-
-		<header-file src="src/ios/AppDelegate+FCMPlugin.h" />
-		<source-file src="src/ios/AppDelegate+FCMPlugin.m" />
-
-		<header-file src="src/ios/FCMPluginIOS9Support.h" />
-		<source-file src="src/ios/FCMPluginIOS9Support.m" />
-
-		<header-file src="src/ios/FCMNotificationCenterDelegate.h" />
-		<source-file src="src/ios/FCMNotificationCenterDelegate.m" />
-
-		<!-- FIREBASE COCOAPODS-->
-		<podspec>
-			<config>
-                <source url="https://github.com/CocoaPods/Specs.git"/>
-			</config>
-			<pods>
-				<pod name="Firebase/Messaging" spec="$IOS_FIREBASE_MESSAGING_VERSION"/>
-			</pods>
-		</podspec>
-	</platform>
 
 	<!-- COPY FCM CONFIG FILES TO PLATFORM BEFORE COMPILING -->
 	<hook src="scripts/copy_google_service_files.js" type="after_prepare" />
 	<hook src="scripts/copy_google_service_files.js" type="after_plugin_add" />
-	<hook src="scripts/install_ionic_dependencies.bat" type="after_plugin_install" />
 </plugin>
