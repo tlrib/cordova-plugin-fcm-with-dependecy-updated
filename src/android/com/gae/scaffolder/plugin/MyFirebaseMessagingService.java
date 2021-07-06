@@ -65,7 +65,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Log.d(TAG, "\tNotification Data: " + data.toString());
         
-        buildNotification("MEA_CARD_NOTIFICATION", "New card registered", "check it out");
+        // buildNotification("MEA_CARD_NOTIFICATION", "New card registered", "check it out");
 
         if (PushwooshFcmHelper.isPushwooshMessage(remoteMessage)) {
             //this is a Pushwoosh push, SDK will handle it automatically
