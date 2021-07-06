@@ -13,6 +13,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.outsystemsenterprise.sonaedev.CartaoContinente.MainActivity;
 import com.outsystemsenterprise.sonaedev.CartaoContinente.R;
+import com.pushwoosh.firebase.PushwooshFcmHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +27,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         super.onNewToken(token);
         Log.d(TAG, "New token: " + token);
         FCMPlugin.sendTokenRefresh(token);
+        PushwooshFcmHelper.onTokenRefresh(token);
     }
 
     /**
@@ -62,8 +64,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
 
         Log.d(TAG, "\tNotification Data: " + data.toString());
+        
         buildNotification("MEA_CARD_NOTIFICATION", "New card registered", "check it out");
-        FCMPlugin.sendPushPayload(data);
+
+        if (PushwooshFcmHelper.isPushwooshMessage(remoteMessage)) {
+            //this is a Pushwoosh push, SDK will handle it automatically
+            PushwooshFcmHelper.onMessageReceived(this, remoteMessage);
+        } else {
+            FCMPlugin.sendPushPayload(data);
+        }
     }
     // [END receive_message]
 
