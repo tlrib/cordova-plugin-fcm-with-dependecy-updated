@@ -51,7 +51,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Log.d(TAG, "\tNotification Data: " + data.toString());
 
         if (PushwooshFcmHelper.isPushwooshMessage(remoteMessage)) {
-            //this is a Pushwoosh push, SDK will handle it automatically
             PushwooshFcmHelper.onMessageReceived(this, remoteMessage);
         } else {
             FCMPlugin.sendPushPayload(data);
