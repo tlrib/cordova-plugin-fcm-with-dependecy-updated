@@ -3,7 +3,7 @@ package com.gae.scaffolder.plugin;
 import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.pushwoosh.firebase.PushwooshFcmHelper;
+import com.salesforce.marketingcloud.messages.push.PushMessageManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,9 +15,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String token) {
         super.onNewToken(token);
-        Log.d(TAG, "New token: " + token);
+        Log.d(TAG, "New Firebase token: " + token);
         FCMPlugin.sendTokenRefresh(token);
-        PushwooshFcmHelper.onTokenRefresh(token);
+        MarketingCloudSdk.requestSdk(marketingCloudSdk -> marketingCloudSdk.getPushMessageManager().setPushToken(token));
     }
 
     /**
@@ -49,10 +49,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
 
         Log.d(TAG, "\tNotification Data: " + data.toString());
-
-        if (PushwooshFcmHelper.isPushwooshMessage(remoteMessage)) {
-            //this is a Pushwoosh push, SDK will handle it automatically
-            PushwooshFcmHelper.onMessageReceived(this, remoteMessage);
+        if(PushMessageManager.isMarketingCloudPush(remoteMessage)){
+            MarketingCloudSdk.requestSdk(marketingCloudSdk -> marketingCloudSdk.getPushMessageManager().handleMessage(remoteMessage));
         } else {
             FCMPlugin.sendPushPayload(data);
         }
