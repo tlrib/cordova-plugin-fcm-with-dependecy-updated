@@ -25,6 +25,7 @@ buildscript {
         mavenCentral()
         jcenter()
         mavenLocal()
+        maven { url "http://salesforce-marketingcloud.github.io/MarketingCloudSDK-Android/repository" }
         if (gradleNumberVersion >= 3.4f) {
             google()
         }
@@ -61,15 +62,13 @@ buildscript {
 repositories {
     mavenCentral()
     jcenter()
-    maven { 
-        url "https://salesforce-marketingcloud.github.io/MarketingCloudSDK-Android/repository"
-    }
     if (gradleNumberVersion >= 3.4f) {
         google()
     }
+    maven { url "http://salesforce-marketingcloud.github.io/MarketingCloudSDK-Android/repository" }
 }
 dependencies {
-    implementation 'com.salesforce.marketingcloud:marketingcloudsdk:7.4.1'
+    implementation "com.salesforce.marketingcloud:marketingcloudsdk:7.4.1"
     // Load system enviroment defined values, or, if unavailable, plugin defaults
     def ANDROID_FCM_VERSION = System.getenv('ANDROID_FCM_VERSION') ?: '21.0.0'
     def ANDROID_FIREBASE_BOM_VERSION = System.getenv('ANDROID_FIREBASE_BOM_VERSION') ?: '26.0.0'
