@@ -68,10 +68,10 @@ repositories {
     maven { url "http://salesforce-marketingcloud.github.io/MarketingCloudSDK-Android/repository" }
 }
 dependencies {
-    implementation "com.salesforce.marketingcloud:marketingcloudsdk:7.4.1"
+    implementation "com.salesforce.marketingcloud:marketingcloudsdk:7.4.2"
     // Load system enviroment defined values, or, if unavailable, plugin defaults
     def ANDROID_FCM_VERSION = System.getenv('ANDROID_FCM_VERSION') ?: '21.0.0'
-    def ANDROID_FIREBASE_BOM_VERSION = System.getenv('ANDROID_FIREBASE_BOM_VERSION') ?: '26.0.0'
+    def ANDROID_FIREBASE_BOM_VERSION = System.getenv('ANDROID_FIREBASE_BOM_VERSION') ?: '28.4.0'
     try {
         // Load configuration from install variables (package.json) two directories above
         def PLUGIN_CONFIG = new groovy.json.JsonSlurper().parseText(file("${projectDir}/../../package.json").text).cordova.plugins['cordova-plugin-fcm-with-dependecy-updated']
