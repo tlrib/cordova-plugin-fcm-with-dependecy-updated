@@ -52,8 +52,53 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Log.d(TAG, "\tNotification Data: " + data.toString());
         if(PushMessageManager.isMarketingCloudPush(remoteMessage)){
             MarketingCloudSdk.requestSdk(marketingCloudSdk -> marketingCloudSdk.getPushMessageManager().handleMessage(remoteMessage));
-        } else {
-            FCMPlugin.sendPushPayload(data);
+    } else {
+      if (data.containsKey("mea_transaction")) {
+        try {
+          JSONObject transactionPushResult = new JSONObject(Objects.requireNonNull(data.get("mea_transaction")).toString());
+          String transactionPushMessage =
+              "Pagamento " + transactionPushResult.getString("authorizationStatus") +
+                  "\nValor " + transactionPushResult.getString("amount") + " " + transactionPushResult.getString("currencyCode");
+
+          buildNotification("MEA_TRANSACTION_NOTIFICATION", "Pagamento Continente Pay", transactionPushMessage);
+        } catch (JSONException e) {
+          e.printStackTrace();
+        }
+      }
+      FCMPlugin.sendPushPayload(data);
+    }
+  }
+    private void buildNotification(String channel, String title, String message) {
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        createNotificationChannel(this, channel);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channel)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setSmallIcon(R.drawable.apdu_service_banner)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        notificationManager.notify(69, builder.build());
+    }
+
+    private void createNotificationChannel(Context context, String channelId) {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        NotificationChannel channel = new NotificationChannel(channelId, channelId, NotificationManager.IMPORTANCE_HIGH);
+        channel.setDescription(channelId);
+        // Register the channel with the system; you can't change the importance
+        // or other notification behaviors after this
+        NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
         }
     }
+
 }
