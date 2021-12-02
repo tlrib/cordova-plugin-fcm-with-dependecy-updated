@@ -71,8 +71,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             //this is a Pushwoosh push, SDK will handle it automatically
             PushwooshFcmHelper.onMessageReceived(this, remoteMessage);
         } else {
-            FCMPlugin.sendPushPayload(data);
+      if (data.containsKey("mea_transaction")) {
+        try {
+          JSONObject transactionPushResult = new JSONObject(Objects.requireNonNull(data.get("mea_transaction")).toString());
+          String transactionPushMessage =
+              "Pagamento " + transactionPushResult.getString("authorizationStatus") +
+                  "\nValor " + transactionPushResult.getString("amount") + " " + transactionPushResult.getString("currencyCode");
+
+          buildNotification("MEA_TRANSACTION_NOTIFICATION", "Pagamento Continente Pay", transactionPushMessage);
+        } catch (JSONException e) {
+          e.printStackTrace();
         }
+      }
+      FCMPlugin.sendPushPayload(data);
+    }
     }
     // [END receive_message]
 
