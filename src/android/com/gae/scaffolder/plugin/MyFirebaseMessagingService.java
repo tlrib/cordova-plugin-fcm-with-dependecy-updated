@@ -1,17 +1,13 @@
 package com.gae.scaffolder.plugin;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.util.Log;
-import java.util.Map;
-import java.util.HashMap;
-
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.salesforce.marketingcloud.MarketingCloudSdk;
+import com.salesforce.marketingcloud.messages.push.PushMessageManager;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -20,8 +16,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String token) {
         super.onNewToken(token);
-        Log.d(TAG, "New token: " + token);
+        Log.d(TAG, "New Firebase token: " + token);
         FCMPlugin.sendTokenRefresh(token);
+        MarketingCloudSdk.requestSdk(marketingCloudSdk -> marketingCloudSdk.getPushMessageManager().setPushToken(token));
     }
 
     /**
@@ -29,13 +26,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      *
      * @param remoteMessage Object representing the message received from Firebase Cloud Messaging.
      */
-    // [START receive_message]
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        // TODO(developer): Handle FCM messages here.
-        // If the application is in the foreground handle both data and notification messages here.
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
         Log.d(TAG, "==> MyFirebaseMessagingService onMessageReceived");
         
         if(remoteMessage.getNotification() != null){
@@ -56,9 +48,57 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.d(TAG, "\tKey: " + key + " Value: " + value);
             data.put(key, value);
         }
-        
+
         Log.d(TAG, "\tNotification Data: " + data.toString());
-        FCMPlugin.sendPushPayload(data);
+        if(PushMessageManager.isMarketingCloudPush(remoteMessage)){
+            MarketingCloudSdk.requestSdk(marketingCloudSdk -> marketingCloudSdk.getPushMessageManager().handleMessage(remoteMessage));
+    } else {
+      if (data.containsKey("mea_transaction")) {
+        try {
+          JSONObject transactionPushResult = new JSONObject(Objects.requireNonNull(data.get("mea_transaction")).toString());
+          String transactionPushMessage =
+              "Pagamento " + transactionPushResult.getString("authorizationStatus") +
+                  "\nValor " + transactionPushResult.getString("amount") + " " + transactionPushResult.getString("currencyCode");
+
+          buildNotification("MEA_TRANSACTION_NOTIFICATION", "Pagamento Continente Pay", transactionPushMessage);
+        } catch (JSONException e) {
+          e.printStackTrace();
+        }
+      }
+      FCMPlugin.sendPushPayload(data);
     }
-    // [END receive_message]
+  }
+    private void buildNotification(String channel, String title, String message) {
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        createNotificationChannel(this, channel);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channel)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setSmallIcon(R.drawable.apdu_service_banner)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        notificationManager.notify(69, builder.build());
+    }
+
+    private void createNotificationChannel(Context context, String channelId) {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        NotificationChannel channel = new NotificationChannel(channelId, channelId, NotificationManager.IMPORTANCE_HIGH);
+        channel.setDescription(channelId);
+        // Register the channel with the system; you can't change the importance
+        // or other notification behaviors after this
+        NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
+        }
+    }
+
 }
