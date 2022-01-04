@@ -25,7 +25,7 @@ buildscript {
         mavenCentral()
         jcenter()
         mavenLocal()
-        maven { url "http://salesforce-marketingcloud.github.io/MarketingCloudSDK-Android/repository" }
+        maven { url "https://salesforce-marketingcloud.github.io/MarketingCloudSDK-Android/repository" }
         if (gradleNumberVersion >= 3.4f) {
             google()
         }
