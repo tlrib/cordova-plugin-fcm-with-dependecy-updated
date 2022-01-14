@@ -7,6 +7,11 @@ var APP_NAME = helpers.getValueFromXml(
     'name',
     'app name was not found on config.xml'
 );
+var ENV = helpers.getValueFromXml(
+    'config.xml',
+    'env',
+    'environment was not found on config.xml'
+);
 var IOS_DIR = 'platforms/ios';
 var ANDROID_DIR = 'platforms/android';
 
@@ -35,7 +40,8 @@ exports.PLATFORM = {
             ANDROID_DIR + '/google-services.json',
             ANDROID_DIR + '/assets/www/google-services.json',
             'www/google-services.json',
-            'google-services.json'
+            ENV + '-google-services.json',
+            'google-services.json',
         ],
         stringsXmls: [
             ANDROID_DIR + '/app/build/generated/res/google-services/debug/values/values.xml'

@@ -64,7 +64,7 @@ repositories {
     if (gradleNumberVersion >= 3.4f) {
         google()
     }
-    maven { url "http://salesforce-marketingcloud.github.io/MarketingCloudSDK-Android/repository" }
+    maven { url "https://salesforce-marketingcloud.github.io/MarketingCloudSDK-Android/repository" }
 }
 dependencies {
     implementation "com.salesforce.marketingcloud:marketingcloudsdk:7.4.2"
