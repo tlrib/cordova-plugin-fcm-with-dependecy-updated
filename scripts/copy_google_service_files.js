@@ -5,6 +5,7 @@ var fs = require('fs');
 var helpers = require('./helpers');
 var configurations = require(`./configuration`);
 
+
 var PLATFORM = configurations.PLATFORM;
 
 function copyGoogleServiceFile(platform) {

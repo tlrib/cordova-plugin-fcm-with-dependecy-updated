@@ -1,19 +1,18 @@
 'use strict';
 
-var helpers = require('./helpers');
+const helpers = require('./helpers');
+const configPreferences = require('./get_config_preferences').getPreferences();
 
-var APP_NAME = helpers.getValueFromXml(
+let APP_NAME = helpers.getValueFromXml(
     'config.xml',
     'name',
     'app name was not found on config.xml'
 );
-var ENV = helpers.getValueFromXml(
-    'config.xml',
-    'env',
-    'environment was not found on config.xml'
-);
-var IOS_DIR = 'platforms/ios';
-var ANDROID_DIR = 'platforms/android';
+
+const ENV = configPreferences.common.env;
+
+let IOS_DIR = 'platforms/ios';
+let ANDROID_DIR = 'platforms/android';
 
 exports.PLATFORM = {
     IOS: {
