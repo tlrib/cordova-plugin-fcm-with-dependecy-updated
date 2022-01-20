@@ -44,11 +44,10 @@ exports.PLATFORM = {
             ANDROID_DIR + '/assets/www/google-services.json',
             'www/google-services.json',
             'google-services.json',
-            ANDROID_DIR + '/' + ENV + 'google-services.json',
-            ANDROID_DIR + '/assets/www/' + ENV + 'google-services.json',
-            'www/' + ENV + 'google-services.json',
-            ENV + '-google-services.json',
-            ENV + '-google-services.json',
+            ANDROID_DIR + '/' + ENV + '-google-services.json',
+            ANDROID_DIR + '/assets/www/' + ENV + '-google-services.json',
+            'www/' + ENV + '-google-services.json',
+            ENV + '-google-services.json'
         ],
         stringsXmls: [
             ANDROID_DIR + '/app/build/generated/res/google-services/debug/values/values.xml'
