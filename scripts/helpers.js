@@ -61,6 +61,7 @@ exports.getGoogleServiceContent = function (platform) {
     }
 
     try {
+        console.log("###### FOUND " + googleServiceSourcePath + " FIREBASE FILE ######");
         return fs.readFileSync(googleServiceSourcePath).toString();
     } catch (error) {
         exports.logError('Error on trying to read ' + googleServiceSourcePath, error);
