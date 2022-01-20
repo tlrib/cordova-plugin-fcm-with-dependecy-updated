@@ -9,7 +9,7 @@ var configurations = require(`./configuration`);
 var PLATFORM = configurations.PLATFORM;
 
 function copyGoogleServiceFile(platform) {
-    console.log("###### ADDING GOOGLE-SERVICES FILE ######");
+    console.log("###### FINDING GOOGLE-SERVICES FILE ######");
     var googleServiceContent = helpers.getGoogleServiceContent(platform);
     if (!googleServiceContent) {
         return;

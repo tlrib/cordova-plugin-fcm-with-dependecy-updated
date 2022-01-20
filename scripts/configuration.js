@@ -9,7 +9,11 @@ let APP_NAME = helpers.getValueFromXml(
     'app name was not found on config.xml'
 );
 
+console.log("###### DETECTED PREFERENCES: " + JSON.stringify(configPreferences) + " ######")
+
 const ENV = configPreferences.common.env;
+
+console.log("###### USING ENV PROPERTY: " + ENV + " ######");
 
 let IOS_DIR = 'platforms/ios';
 let ANDROID_DIR = 'platforms/android';
